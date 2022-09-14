@@ -6,7 +6,4 @@ class ClienteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Cliente
         fields = '__all__'
-        lookup_field = 'nome'
-        extra_kwargs = {
-            'url': {'lookup_field': 'nome'}
-        }
+
