@@ -1,7 +1,7 @@
 <h1>Meu portfólio</h1>
 <h3>Objetivo:</h3>
     <p>
-        ...
+        Criar uma apirest
     </p>
     
 <h3>Como Funciona:</h3>
