@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from core.api.serializers import ClienteSerializer
+from rest_framework import permissions
 from core import models
 
 # Serializers define the API representation.
