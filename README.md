@@ -33,21 +33,40 @@
   
   - Libs:
     - asgiref==3.5.2
+    - asttokens==2.0.8
     - autopep8==1.7.0
+    - backcall==0.2.0
+    - decorator==5.1.1
     - dj-database-url==1.0.0
     - Django==4.1
     - django-crispy-forms==1.14.0
     - django-filter==22.1
     - django-on-heroku==1.1.2
-    - gunicorn==20.1.0
-    - Pillow==9.2.0
-    - psycopg2-binary==2.9.3
-    - pycodestyle==2.9.1
-    - python-decouple==3.6
-    - sqlparse==0.4.2
-    - toml==0.10.2  
-    - whitenoise==6.2.0
     - djangorestframework==3.13.1
+    - executing==1.0.0
+    - gunicorn==20.1.0
+    - ipython==8.5.0
+    - jedi==0.18.1
+    - matplotlib-inline==0.1.6
+    - parso==0.8.3
+    - pexpect==4.8.0
+    - pickleshare==0.7.5
+    - Pillow==9.2.0
+    - prompt-toolkit==3.0.31
+    - psycopg2-binary==2.9.3
+    - ptyprocess==0.7.0
+    - pure-eval==0.2.2
+    - pycodestyle==2.9.1
+    - Pygments==2.13.0
+    - python-decouple==3.6
+    - pytz==2022.2.1
+    - six==1.16.0
+    - sqlparse==0.4.2
+    - stack-data==0.5.0
+    - toml==0.10.2
+    - traitlets==5.4.0
+    - wcwidth==0.2.5
+    - whitenoise==6.2.0
 
   - Framework:
     - Django==4.1
