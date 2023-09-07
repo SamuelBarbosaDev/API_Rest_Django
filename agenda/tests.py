@@ -31,3 +31,33 @@ class TestListagemAgendamentos(APITestCase):
         )
         data = json.loads(response.content)
         self.assertDictEqual(data[0], agendamento_serializado)
+
+
+class TestCriacaoAgendamento(APITestCase):
+    def test_cria_agendamento(self):
+        agendamento_serializado = {
+            "data_horario": "2023-09-02T00:00:00Z",
+            "nome_cliente": "Luana52",
+            "email_cliente": "Luana52@Luana52.com",
+            "telefone_cliente": '123456789012'
+        }
+        response = self.client.post(
+            path='/api/agendamento_list',
+            data=agendamento_serializado,
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_quando_request_e_invalido_retorna_400(self):
+        agendamento_serializado = {
+            "data_horario": "202:00Z",
+            "nome_cliente": "Luana52",
+            "email_cliente": "Luana52@Luana52.com",
+            "telefone_cliente": '123456789012'
+        }
+        response = self.client.post(
+            path='/api/agendamento_list',
+            data=agendamento_serializado,
+            format='json',
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
