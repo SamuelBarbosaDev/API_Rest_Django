@@ -61,6 +61,30 @@ class TestCriacaoAgendamento(APITestCase):
             )
         )
 
+    def test_verificando_se_a_api_retorna_objeto_criado(self):
+        agendamento_serializado = {
+            "data_horario": "2023-03-15T00:00:00Z",
+            "nome_cliente": "Usuario",
+            "email_cliente": "Usuario@Usuario.com",
+            "telefone_cliente": '123456789012'
+        }
+        # response POST:
+        self.client.post(
+            path='/api/agendamento_list',
+            data=agendamento_serializado,
+            format='json'
+        )
+        # ---
+        response = self.client.get(
+            path='/api/agendamento_list',
+        )
+        data = json.loads(response.content)
+
+        self.assertEqual(
+            data[0],
+            agendamento_serializado
+        )
+
     def test_quando_request_e_invalido_retorna_400(self):
         agendamento_serializado = {
             "data_horario": "202:00Z",
