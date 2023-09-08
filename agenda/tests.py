@@ -13,7 +13,10 @@ class TestListagemAgendamentos(APITestCase):
 
     def test_listagem_de_agendamentos_criados(self):
         Agendamento.objects.create(
-            data_horario=datetime(2023, 9, 2),
+            data_horario=datetime(
+                2023, 9, 2,
+                tzinfo=timezone.utc
+            ),
             nome_cliente="Luana52",
             email_cliente="Luana52@Luana52.com",
             telefone_cliente='123456789012'
