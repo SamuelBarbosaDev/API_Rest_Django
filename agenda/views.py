@@ -7,7 +7,7 @@ from agenda.models import Agendamento
 from django.http import JsonResponse
 
 
-@api_view(http_method_names=['GET', 'PUT'])
+@api_view(http_method_names=['GET', 'PATCH'])
 def agendamento_detail(request, id):
     obj = get_object_or_404(Agendamento, id=id)
 
@@ -16,8 +16,8 @@ def agendamento_detail(request, id):
         serializer = AgendamentoSerializer(obj)
         return JsonResponse(serializer.data)
 
-    if request.method == 'PUT':
-        serializer = AgendamentoSerializer(data=request.data)
+    if request.method == 'PATCH':
+        serializer = AgendamentoSerializer(data=request.data, partial=True)
 
         if serializer.is_valid():
             validated_data = serializer.validated_data
@@ -40,7 +40,7 @@ def agendamento_detail(request, id):
             )
             obj.save()
             return JsonResponse(
-                serializer.data,
+                validated_data,
                 status=status.HTTP_200_OK
             )
 
