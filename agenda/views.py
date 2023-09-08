@@ -7,7 +7,7 @@ from agenda.models import Agendamento
 from django.http import JsonResponse
 
 
-@api_view(http_method_names=['GET', 'PATCH'])
+@api_view(http_method_names=['GET', 'PATCH', 'DELETE'])
 def agendamento_detail(request, id):
     obj = get_object_or_404(Agendamento, id=id)
 
@@ -48,6 +48,11 @@ def agendamento_detail(request, id):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+    if request.method == 'DELETE':
+        # Como deletar um agendamento em específico?
+        obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(http_method_names=['GET', 'POST'])
