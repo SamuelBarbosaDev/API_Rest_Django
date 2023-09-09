@@ -51,7 +51,9 @@ def agendamento_detail(request, id):
 
     if request.method == 'DELETE':
         # Como deletar um agendamento em específico?
-        obj.delete()
+        # obj.delete()
+        obj.cancelamento_cliente = True
+        obj.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -59,7 +61,8 @@ def agendamento_detail(request, id):
 def agendamento_list(request):
     if request.method == 'GET':
         # Como listar todos os agendamentos?
-        qs = Agendamento.objects.all()
+        qs = Agendamento.objects.filter(cancelamento_cliente=False)
+        # qs = Agendamento.objects.all()
         serializer = AgendamentoSerializer(qs, many=True)
         return JsonResponse(serializer.data, safe=False)
 
