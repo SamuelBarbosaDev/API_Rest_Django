@@ -6,5 +6,5 @@ from agenda.views import (
 
 urlpatterns = [
     path('agendamento_list', agendamento_list),
-    path('agendamento/<int:id>/', agendamento_detail)
+    path('agendamento/<int:id>', agendamento_detail)
 ]
