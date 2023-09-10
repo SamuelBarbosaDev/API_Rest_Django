@@ -14,7 +14,7 @@ class TestListagemAgendamentos(APITestCase):
     def test_listagem_de_agendamentos_criados(self):
         Agendamento.objects.create(
             data_horario=datetime(
-                2023, 9, 2,
+                2024, 9, 2,
                 tzinfo=timezone.utc
             ),
             nome_cliente="Luana52",
@@ -23,7 +23,7 @@ class TestListagemAgendamentos(APITestCase):
         )
 
         agendamento_serializado = {
-            "data_horario": "2023-09-02T00:00:00Z",
+            "data_horario": "2024-09-02T00:00:00Z",
             "nome_cliente": "Luana52",
             "email_cliente": "Luana52@Luana52.com",
             "telefone_cliente": '123456789012'
@@ -39,7 +39,7 @@ class TestListagemAgendamentos(APITestCase):
 class TestCriacaoAgendamento(APITestCase):
     def test_cria_agendamento(self):
         agendamento_serializado = {
-            "data_horario": "2023-03-15T00:00:00Z",
+            "data_horario": "2024-03-15T00:00:00Z",
             "nome_cliente": "Luana52",
             "email_cliente": "Luana52@Luana52.com",
             "telefone_cliente": '123456789012'
@@ -66,7 +66,7 @@ class TestCriacaoAgendamento(APITestCase):
 
     def test_verificando_se_a_api_retorna_objeto_criado(self):
         agendamento_serializado = {
-            "data_horario": "2023-03-15T00:00:00Z",
+            "data_horario": "2024-03-15T00:00:00Z",
             "nome_cliente": "Usuario",
             "email_cliente": "Usuario@Usuario.com",
             "telefone_cliente": '123456789012'
