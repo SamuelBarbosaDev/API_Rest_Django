@@ -16,6 +16,8 @@ class AgendamentoSerializer(serializers.ModelSerializer):
             'prestador'
         ]
 
+    prestador = serializers.CharField()
+
     def validate_prestador(self, value):
         try:
             prestador_obj = User.objects.get(username=value)
