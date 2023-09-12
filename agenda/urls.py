@@ -5,6 +5,6 @@ from agenda.views import (
 )
 
 urlpatterns = [
-    path('agendamento_list', AgendamentoList.as_view()),
-    path('agendamento/<int:pk>', AgendamentoDetail.as_view())
+    path('agendamento_list/', AgendamentoList.as_view()),
+    path('agendamento/<int:pk>/', AgendamentoDetail.as_view())
 ]
