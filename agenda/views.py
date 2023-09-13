@@ -1,7 +1,11 @@
 from rest_framework import generics
 from agenda.models import Agendamento
 from rest_framework import permissions
-from agenda.serializers import AgendamentoSerializer
+from django.contrib.auth.models import User
+from agenda.serializers import (
+    AgendamentoSerializer,
+    PrestadorSerializer
+)
 
 
 class IsOwnerOrCreateOnly(permissions.BasePermission):
@@ -42,3 +46,9 @@ class AgendamentoDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Agendamento.objects.all()
     serializer_class = AgendamentoSerializer
     permission_classes = [IsPrestador]
+
+
+class PrestadorList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = PrestadorSerializer
+
