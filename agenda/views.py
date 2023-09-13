@@ -31,14 +31,6 @@ class IsPrestador(permissions.BasePermission):
             return False
 
 
-class IsAdmin(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.user.username == 'admin':
-            return True
-
-        return False
-
-
 # /api/agendamento_list/?username=admin
 class AgendamentoList(generics.ListCreateAPIView):
     serializer_class = AgendamentoSerializer
@@ -59,4 +51,4 @@ class AgendamentoDetail(generics.RetrieveUpdateDestroyAPIView):
 class PrestadorList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = PrestadorSerializer
-    permission_classes = [IsAdmin]
+    permission_classes = [permissions.IsAdminUser]
