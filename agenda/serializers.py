@@ -3,6 +3,15 @@ from agenda.models import Agendamento
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+"""
+Regras de negócio:
+
+- Qualquer cliente (auteicado ou não) seja capaz de criar um agendamento.
+- Apenas o prestador de serviço pode visualizar todos os agendamentos em sua
+agenda.
+- Apenas o prestador de serviço pode manipular os seus agendamentos.
+"""
+
 
 class AgendamentoSerializer(serializers.ModelSerializer):
     class Meta:
