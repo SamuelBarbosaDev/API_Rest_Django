@@ -18,6 +18,15 @@ class IsOwnerOrCreateOnly(permissions.BasePermission):
             return False
 
 
+class IsPrestador(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if obj.prestador == request.user:
+            return True
+
+        else:
+            return False
+
+
 # /api/agendamento_list/?username=admin
 class AgendamentoList(generics.ListCreateAPIView):
     serializer_class = AgendamentoSerializer
@@ -32,3 +41,4 @@ class AgendamentoList(generics.ListCreateAPIView):
 class AgendamentoDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Agendamento.objects.all()
     serializer_class = AgendamentoSerializer
+    permission_classes = [IsPrestador]
