@@ -23,7 +23,7 @@ class AgendamentoSerializer(serializers.ModelSerializer):
             prestador_obj = User.objects.get(username=value)
 
         except User.DoesNotExist:
-            pass
+            raise serializers.ValidationError('Usuário não encontrado!')
 
         return prestador_obj
 
