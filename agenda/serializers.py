@@ -2,6 +2,7 @@ from django.utils import timezone
 from agenda.models import Agendamento
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from agenda.utils import get_horario_disponiveis
 
 """
 Regras de negócio:
@@ -41,6 +42,11 @@ class AgendamentoSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 detail='O agendamento não pode ser feito no passado.',
                 code=400
+            )
+
+        if value not in get_horario_disponiveis(value.date()):
+            raise serializers.ValidationError(
+                'Esse horário não está disponível, pois, é feriado.'
             )
 
         return value
