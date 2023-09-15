@@ -1,102 +1,149 @@
 import json
-from datetime import datetime, timezone
 from rest_framework import status
 from agenda.models import Agendamento
+from datetime import datetime, timezone
 from rest_framework.test import APITestCase
+from django.contrib.auth.models import User
 
 
 class TestListagemAgendamentos(APITestCase):
+    def setUp(self):
+        # Crie um usuário para autenticação
+        self.user = User.objects.create_user(
+            username='user',
+            password='1234'
+        )
+        # Autentique o usuário
+        self.client.login(
+            username='user',
+            password='1234'
+        )
+        # Serializando agendamento
+        self.agendamento_serializado = {
+            'id': 1,
+            'prestador': 'user',
+            'data_horario': '2024-09-02T00:00:00Z',
+            'nome_cliente': 'user',
+            'email_cliente': 'user@user.com',
+            'telefone_cliente': '012345678912',
+        }
+
     def test_listagem_vazia(self):
-        response = self.client.get('/api/agendamento_list')
+        # Faça a solicitação GET autenticada
+        response = self.client.get('/api/agendamento_list/?username=user')
         data = json.loads(response.content)
+        print(data)
+
+        # Verifique se a resposta está vazia
         self.assertEqual(data, [])
 
     def test_listagem_de_agendamentos_criados(self):
+        # Crie um agendamento
         Agendamento.objects.create(
+            prestador=self.user,
             data_horario=datetime(
                 2024, 9, 2,
                 tzinfo=timezone.utc
             ),
-            nome_cliente="Luana52",
-            email_cliente="Luana52@Luana52.com",
-            telefone_cliente='123456789012'
+            nome_cliente='user',
+            email_cliente='user@user.com',
+            telefone_cliente='012345678912',
         )
 
-        agendamento_serializado = {
-            "data_horario": "2024-09-02T00:00:00Z",
-            "nome_cliente": "Luana52",
-            "email_cliente": "Luana52@Luana52.com",
-            "telefone_cliente": '123456789012'
-        }
-
+        # Faça a solicitação GET
         response = self.client.get(
-            path='/api/agendamento_list',
+            path='/api/agendamento_list/?username=user',
         )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Verifique se o agendamento criado está na lista
         data = json.loads(response.content)
-        self.assertDictEqual(data[0], agendamento_serializado)
+        self.assertEqual(len(data), 1)
+
+        self.assertDictEqual(data[0], self.agendamento_serializado)
 
 
 class TestCriacaoAgendamento(APITestCase):
-    def test_cria_agendamento(self):
-        agendamento_serializado = {
-            "data_horario": "2024-03-15T00:00:00Z",
-            "nome_cliente": "Luana52",
-            "email_cliente": "Luana52@Luana52.com",
-            "telefone_cliente": '123456789012'
+    def setUp(self):
+        # Crie um usuário para autenticação
+        self.user = User.objects.create_user(
+            username='user',
+            password='1234',
+        )
+        # Autentique o usuário
+        self.client.login(
+            username='user',
+            password='1234',
+        )
+        # Serializando agendamento
+        self.agendamento_serializado = {
+            "id": 1,
+            "data_horario": "2024-09-12T09:00:00Z",
+            "nome_cliente": "user",
+            "email_cliente": "user@user.com",
+            "telefone_cliente": "012345678912",
+            "prestador": "user"
         }
-        # response:
-        self.client.post(
-            path='/api/agendamento_list',
-            data=agendamento_serializado,
+
+    def test_cria_agendamento(self):
+        # Fazendo uma requisição POST
+        response = self.client.post(
+            path='/api/agendamento_list/?username=user',
+            data=self.agendamento_serializado,
             format='json'
         )
-        # ---
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED
+        )
+        # Verifique o harário do agendamento
         agendamento_criado = Agendamento.objects.get()
         agendamento_criado.data_horario = datetime(
-            2022, 3, 15,
+            2024, 9, 2,
             tzinfo=timezone.utc
         )
         self.assertEqual(
             agendamento_criado.data_horario,
             datetime(
-                2022, 3, 15,
+                2024, 9, 2,
                 tzinfo=timezone.utc
             )
         )
 
     def test_verificando_se_a_api_retorna_objeto_criado(self):
-        agendamento_serializado = {
-            "data_horario": "2024-03-15T00:00:00Z",
-            "nome_cliente": "Usuario",
-            "email_cliente": "Usuario@Usuario.com",
-            "telefone_cliente": '123456789012'
-        }
-        # response POST:
-        self.client.post(
-            path='/api/agendamento_list',
-            data=agendamento_serializado,
+        # Fazendo uma requisição POST
+        response_post = self.client.post(
+            path='/api/agendamento_list/?username=user',
+            data=self.agendamento_serializado,
             format='json'
         )
-        # ---
-        response = self.client.get(
-            path='/api/agendamento_list',
-        )
-        data = json.loads(response.content)
+        self.assertEqual(response_post.status_code, status.HTTP_201_CREATED)
 
+        # Fazendo uma requisição GET
+        response_get = self.client.get(
+            path='/api/agendamento_list/?username=user',
+        )
+        self.assertEqual(response_get.status_code, status.HTTP_200_OK)
+
+        # Comparando a resposta GET com o agendamento serializado
+        data = json.loads(response_get.content)
         self.assertEqual(
             data[0],
-            agendamento_serializado
+            self.agendamento_serializado
         )
 
     def test_quando_request_e_invalido_retorna_400(self):
         agendamento_serializado = {
-            "data_horario": "202:00Z",
-            "nome_cliente": "Luana52",
-            "email_cliente": "Luana52@Luana52.com",
-            "telefone_cliente": '123456789012'
+            "id": 1,
+            "prestador": "user",
+            "data_horario": "erro",
+            "nome_cliente": "user",
+            "email_cliente": "user@user.com",
+            "telefone_cliente": "012345678912",
         }
         response = self.client.post(
-            path='/api/agendamento_list',
+            path='/api/agendamento_list/?username=user',
             data=agendamento_serializado,
             format='json',
         )
