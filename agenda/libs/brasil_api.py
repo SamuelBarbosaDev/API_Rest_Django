@@ -1,5 +1,6 @@
 import requests
 from datetime import date
+from django.conf import settings
 
 
 def is_feriado(data: date) -> bool:
@@ -9,6 +10,10 @@ def is_feriado(data: date) -> bool:
     solicitada pelo nosso usuário.
     - Caso afirmativo: retorna uma lista vazia.
     """
+
+    if settings.TESTING == 1:
+        return False
+
     r = requests.get(
         url=f'https://brasilapi.com.br/api/feriados/v1/{data.year}'
     )
