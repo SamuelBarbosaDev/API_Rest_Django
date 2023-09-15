@@ -12,6 +12,8 @@ def is_feriado(data: date) -> bool:
     """
 
     if settings.TESTING == 1:
+        if data.day == 25 and data.month == 12:
+            return True
         return False
 
     r = requests.get(
