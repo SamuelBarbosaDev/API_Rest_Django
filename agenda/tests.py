@@ -148,3 +148,26 @@ class TestCriacaoAgendamento(APITestCase):
             format='json',
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class TestGetHorarios(APITestCase):
+    def test_quando_data_e_feriado_retorna_lista_vazia(self):
+        # Fazendo requisição GET
+        response = self.client.get(path='/api/get_horarios/?data=2024-12-25')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Verificando se o retorno é uma lista vazia
+        data = json.loads(response.content)
+        self.assertEqual(data, [])
+
+    def test_quando_data_e_dia_comum_retorna_lista_com_horarios(self):
+        # Fazendo requisição GET
+        response = self.client.get(path='/api/get_horarios/?data=2024-09-15')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Verificando se o retorno é uma lista Não vazia
+        data = json.loads(response.content)
+        self.assertNotEqual(data, [])
+
+        # Verificando se o retorno é uma lista Não vazia
+        self.assertEqual(data[2], '2024-09-15T10:00:00Z')
