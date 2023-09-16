@@ -1,8 +1,10 @@
 from datetime import datetime
+from rest_framework import status
 from rest_framework import generics
 from agenda.models import Agendamento
 from rest_framework import permissions
 from django.contrib.auth.models import User
+from rest_framework.response import Response
 from django.http.response import JsonResponse
 from agenda.utils import get_horario_disponiveis
 from rest_framework.decorators import api_view
@@ -67,3 +69,8 @@ def get_horarios(request):
         data = datetime.fromisoformat(data).date()
     horarios_disponiveis = sorted(list(get_horario_disponiveis(data)))
     return JsonResponse(horarios_disponiveis, safe=False)
+
+
+@api_view(http_method_names=['GET'])
+def healthcheck(request):
+    return Response(data={"status": "OK"}, status=status.HTTP_200_OK)
