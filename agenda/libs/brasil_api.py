@@ -1,3 +1,4 @@
+import logging
 import requests
 from datetime import date
 from django.conf import settings
@@ -10,8 +11,11 @@ def is_feriado(data: date) -> bool:
     solicitada pelo nosso usuário.
     - Caso afirmativo: retorna uma lista vazia.
     """
+    logging.info(f'Fazendo Requisição para a data: {data.isoformat()}')
 
     if settings.TESTING == 1:
+        logging.info('Requisição não está sendo feita pois TESTING = True')
+
         if data.day == 25 and data.month == 12:
             return True
         return False
@@ -21,7 +25,8 @@ def is_feriado(data: date) -> bool:
     )
 
     if r.status_code != 200:
-        raise ValueError('Não foi possível consultar os feriados!')
+        logging.error('Problema com a Brasil API')
+        return False
 
     feriados = r.json()
 
