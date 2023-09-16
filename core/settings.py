@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
 import sys
 from pathlib import Path
 from decouple import config
@@ -126,3 +127,33 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Add:
 TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
+
+LOGGING = {  # DictConfig schema: https://docs.python.org/3/library/logging.config.html#configuration-dictionary-schema
+    'version': 1,  # Versão do schema atual
+    'disable_existing_loggers': False,  # Django possui alguns loggers por padrão (request, ORM, etc.)
+    'formatters': {  # Como o conteúdo do log deve ser exibido/escrito
+        'console': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'  # -<número>s : espaçamento
+        },
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
+    'handlers': {  # Classes que sabem manipular o log – console (stdout)/arquivo de texto
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': 'app.log'  # Onde o arquivo de log vai ser salvo
+        }
+    },
+    'loggers': {
+        '': {  # '' representa o logger "raíz" (root). Todos "loggers" herdarão dele.
+            'level': os.environ.get('DJANGO_LOG_LEVEL', 'INFO'),
+            'handlers': ['console', 'file']
+        }
+    }
+}
