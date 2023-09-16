@@ -1,4 +1,5 @@
 import json
+from unittest import mock
 from rest_framework import status
 from agenda.models import Agendamento
 from datetime import datetime, timezone
@@ -151,7 +152,8 @@ class TestCriacaoAgendamento(APITestCase):
 
 
 class TestGetHorarios(APITestCase):
-    def test_quando_data_e_feriado_retorna_lista_vazia(self):
+    @mock.patch('agenda.libs.brasil_api.is_feriado', return_value=True)
+    def test_quando_data_e_feriado_retorna_lista_vazia(self, _):
         # Fazendo requisição GET
         response = self.client.get(path='/api/get_horarios/?data=2024-12-25')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -160,7 +162,8 @@ class TestGetHorarios(APITestCase):
         data = json.loads(response.content)
         self.assertEqual(data, [])
 
-    def test_quando_data_e_dia_comum_retorna_lista_com_horarios(self):
+    @mock.patch('agenda.libs.brasil_api.is_feriado', return_value=False)
+    def test_quando_data_e_dia_comum_retorna_lista_com_horarios(self, _):
         # Fazendo requisição GET
         response = self.client.get(path='/api/get_horarios/?data=2024-09-15')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
