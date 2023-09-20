@@ -7,6 +7,7 @@ from rest_framework import permissions
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from agenda.utils import get_horario_disponiveis
+from agenda.tasks import gera_relatorio
 from django.http.response import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
 from agenda.serializers import (
@@ -75,42 +76,12 @@ def healthcheck(request):
 @permission_classes([permissions.IsAdminUser])
 def prestador_list(request):
     formato = request.query_params.get('formato')
-    prestadores = User.objects.all()
-    serializer = PrestadorSerializer(prestadores, many=True)
 
     if formato == 'csv':
-        data_hoje = date.today()
-        response = HttpResponse(
-            content_type='text/csv',
-            headers={
-                'Content-Disposition': f'attachment; filename="Relatório{data_hoje}.csv"'
-            }
-        )
-
-        writer = csv.writer(response)
-        writer.writerow(
-            [
-                'datetime',
-                'name',
-                'email',
-                'phone_number',
-                'prestador'
-            ]
-        )
-        for prestador in serializer.data:
-            agendamentos = prestador['agendamentos']
-
-            for agendamento in agendamentos:
-                writer.writerow(
-                    [
-                        agendamento['data_horario'],
-                        agendamento['nome_cliente'],
-                        agendamento['email_cliente'],
-                        agendamento['telefone_cliente'],
-                        agendamento['prestador'],
-                    ]
-                )
-        return response
+        result = gera_relatorio.delay()
+        return Response({'task_id': result.task_id})
 
     else:
+        prestadores = User.objects.all()
+        serializer = PrestadorSerializer(prestadores, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
