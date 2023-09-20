@@ -1,6 +1,7 @@
 import csv
-from core.celery import app
 from io import StringIO
+from core.celery import app
+from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from agenda.serializers import PrestadorSerializer
 
@@ -32,4 +33,15 @@ def gera_relatorio():
                     agendamento['prestador'],
                 ]
             )
-    return output
+    print(output.getvalue())
+
+
+@app.task
+def envia_email():
+    send_mail(
+        subject='Subject here',
+        message='here is the message.',
+        from_email='from@exemple.com',
+        recipient_list=['to@example.com'],
+        fail_silently=False
+    )
