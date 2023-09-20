@@ -7,7 +7,7 @@ from rest_framework import permissions
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from agenda.utils import get_horario_disponiveis
-from agenda.tasks import gera_relatorio
+from agenda.tasks import gera_relatorio, envia_email
 from django.http.response import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
 from agenda.serializers import (
@@ -78,7 +78,7 @@ def prestador_list(request):
     formato = request.query_params.get('formato')
 
     if formato == 'csv':
-        result = gera_relatorio.delay()
+        result = envia_email.delay()
         return Response({'task_id': result.task_id})
 
     else:
